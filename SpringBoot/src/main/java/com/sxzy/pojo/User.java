@@ -6,14 +6,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 /*描述：表名注解，标识实体类对应的表
 使用位置：实体类*/
 @TableName("login")
-public class User {
+public class User{
+
 /*  描述：主键注解
     使用位置：实体类主键字段*/
     @TableId(type = IdType.ASSIGN_ID)

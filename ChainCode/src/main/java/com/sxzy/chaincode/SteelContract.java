@@ -37,21 +37,51 @@ ChaincodeStub 一个对象，它管理事务Context，提供对状态变量的�
 @Default
 public class SteelContract implements ContractInterface {
 
-    //初始化
+    //初始化ok
     @Transaction
     public void initLedger(final Context ctx) {
         //stub- 用于此事务的链代码存根的实例
         ChaincodeStub stub = ctx.getStub();
-        for (int i = 0; i < 10; i++) {
-            Steel steel = new Steel().setSteel_P_Id("steel-" + i).setSteel_P_Name("iron")
-                    .setSteel_P_Quality("A+").setSteel_P_ManufactureTime("2022/10/15")
-                    .setSteel_T_Pathway("Air").setSteel_T_Shift("Train")
-                    .setSteel_R_Price("16899").setSteel_R_SalesTime("2022/10/16");
-            stub.putStringState(steel.getSteel_P_Id(), JSON.toJSONString(steel));
-        }
+
+        Steel steel1 = new Steel().setSteel_P_Id("steel-" + 1).setSteel_P_Name("iron")
+                .setSteel_P_Quality("A+").setSteel_P_ManufactureTime("2022/1/1")
+                .setSteel_T_Pathway("Air").setSteel_T_Shift("A19")
+                .setSteel_R_Price("16899").setSteel_R_SalesTime("2022/1/6");
+
+        Steel steel2 = new Steel().setSteel_P_Id("steel-" + 2).setSteel_P_Name("iron")
+                .setSteel_P_Quality("B+").setSteel_P_ManufactureTime("2022/1/2")
+                .setSteel_T_Pathway("Air").setSteel_T_Shift("A20")
+                .setSteel_R_Price("12799").setSteel_R_SalesTime("2022/1/7");
+
+        Steel steel3 = new Steel().setSteel_P_Id("steel-" + 3).setSteel_P_Name("copper")
+                .setSteel_P_Quality("A").setSteel_P_ManufactureTime("2022/10/15")
+                .setSteel_T_Pathway("Train").setSteel_T_Shift("T02")
+                .setSteel_R_Price("8999").setSteel_R_SalesTime("2022/11/4");
+
+        Steel steel4= new Steel().setSteel_P_Id("steel-" + 4).setSteel_P_Name("copper")
+                .setSteel_P_Quality("B").setSteel_P_ManufactureTime("2022/10/15")
+                .setSteel_T_Pathway("Train").setSteel_T_Shift("T05")
+                .setSteel_R_Price("6799").setSteel_R_SalesTime("2022/11/5");
+
+        Steel steel5 = new Steel().setSteel_P_Id("steel-" + 5).setSteel_P_Name("aluminum")
+                .setSteel_P_Quality("C").setSteel_P_ManufactureTime("2022/12/23")
+                .setSteel_T_Pathway("Water").setSteel_T_Shift("W89")
+                .setSteel_R_Price("4379").setSteel_R_SalesTime("2023/1/16");
+
+        Steel steel6 = new Steel().setSteel_P_Id("steel-" + 6).setSteel_P_Name("aluminum")
+                .setSteel_P_Quality("C-").setSteel_P_ManufactureTime("2022/12/24")
+                .setSteel_T_Pathway("Water").setSteel_T_Shift("W90")
+                .setSteel_R_Price("3689").setSteel_R_SalesTime("2023/1/18");
+
+        stub.putStringState(steel1.getSteel_P_Id() , JSON.toJSONString(steel1));
+        stub.putStringState(steel2.getSteel_P_Id() , JSON.toJSONString(steel2));
+        stub.putStringState(steel3.getSteel_P_Id() , JSON.toJSONString(steel3));
+        stub.putStringState(steel4.getSteel_P_Id() , JSON.toJSONString(steel4));
+        stub.putStringState(steel5.getSteel_P_Id() , JSON.toJSONString(steel5));
+        stub.putStringState(steel6.getSteel_P_Id() , JSON.toJSONString(steel6));
     }
 
-    //增加一个
+    //增加一个ok
     @Transaction
     public Steel createSteel(final Context ctx, final String steel_P_Id,
                              String steel_P_Name, String steel_P_Quality,
@@ -127,9 +157,53 @@ public class SteelContract implements ContractInterface {
         return steel;
     }
 
-    //查询一个
+    //transporter添加ok
     @Transaction
-    public Steel querySteel(final Context ctx, final String steel_P_Id) {
+    public void transporterAdd(final Context ctx, final String steel_P_Id,
+                                String steel_T_Pathway, String steel_T_Shift) {
+
+        ChaincodeStub stub = ctx.getStub();
+        String steelState = stub.getStringState(steel_P_Id);
+
+        if (StringUtils.isBlank(steelState)) {
+            String errorMessage = String.format("Steel %s does not exist", steel_P_Id);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage);
+        }
+
+        Steel steel = JSON.parseObject(steelState,Steel.class);
+
+
+        steel.setSteel_P_Id(steel_P_Id).setSteel_T_Pathway(steel_T_Pathway).setSteel_T_Shift(steel_T_Shift);
+
+        stub.putStringState(steel_P_Id, JSON.toJSONString(steel));
+    }
+
+    //retailer添加ok
+    @Transaction
+    public void retailerAdd(final Context ctx, final String steel_P_Id,
+                            String steel_R_Price, String steel_R_SalesTime) {
+
+        ChaincodeStub stub = ctx.getStub();
+        String steelState = stub.getStringState(steel_P_Id);
+
+        if (StringUtils.isBlank(steelState)) {
+            String errorMessage = String.format("Steel %s does not exist", steel_P_Id);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage);
+        }
+
+        Steel steel = JSON.parseObject(steelState,Steel.class);
+
+
+        steel.setSteel_R_Price(steel_R_Price).setSteel_R_SalesTime(steel_R_SalesTime);
+
+        stub.putStringState(steel_P_Id, JSON.toJSONString(steel));
+    }
+
+    //根据Id查询一个
+    @Transaction
+    public Steel querySteelById(final Context ctx, final String steel_P_Id) {
         ChaincodeStub stub = ctx.getStub();
         String steelState = stub.getStringState(steel_P_Id);
 
@@ -142,8 +216,7 @@ public class SteelContract implements ContractInterface {
         return JSON.parseObject(steelState, Steel.class);
     }
 
-
-    //查询所有
+    //查询所有ok
     @Transaction
     public SteelQueryResultList queryAll(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();

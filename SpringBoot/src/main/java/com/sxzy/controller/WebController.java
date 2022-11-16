@@ -1,16 +1,15 @@
 package com.sxzy.controller;
 
 import com.sxzy.pojo.Steel;
-import com.sxzy.pojo.SteelQueryResult;
-import com.sxzy.pojo.SteelQueryResultList;
 import com.sxzy.pojo.User;
+//import com.sxzy.service.FabricService;
 import com.sxzy.service.FabricService;
 import com.sxzy.service.UserService;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,11 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-public class LoginController {
+public class WebController {
 
     private User user;
     @Autowired
     private UserService userService;
+
     @Autowired
     private FabricService fabricService;
 
@@ -32,6 +32,7 @@ public class LoginController {
         return "login";
     }
 
+
     //退出功能
     @RequestMapping("/signout")
     public String signOut() {
@@ -39,7 +40,7 @@ public class LoginController {
     }
 
     //验证用户页面
-    @PostMapping("/verifyLogin")
+    @PostMapping("/Dashboard")
     public String verifyUser(@RequestParam("Username") String username, @RequestParam("Password") String password, Model model) throws ContractException {
 
         user = userService.selectOneByUsername(username);
@@ -78,5 +79,41 @@ public class LoginController {
 
         return "login";
     }
+
+    //去Dashboard页面
+    @GetMapping("/Dashboard")
+    public String toDashboard(Model model) throws ContractException {
+        List<Steel> list = fabricService.queryAll();
+        model.addAttribute("list",list);
+        return "dashboard";
+    }
+
+    //去Manufacturer页面
+    @GetMapping("/Manufacturer")
+    public String toManufacturer(Model model) throws ContractException {
+        List<Steel> list = fabricService.queryAll();
+        model.addAttribute("list",list);
+        return "manufacturer";
+    }
+
+    //去Transporter页面
+    @GetMapping("/Transporter")
+    public String toTransporter(Model model) throws ContractException {
+        List<Steel> list = fabricService.queryAll();
+        model.addAttribute("list",list);
+        return "transporter";
+    }
+
+    //去Retailer页面
+    @GetMapping("/Retailer")
+    public String toRetailer(Model model) throws ContractException {
+        List<Steel> list = fabricService.queryAll();
+        model.addAttribute("list",list);
+        return "retailer";
+    }
+
+    //去Account页面
+    @GetMapping("/Account")
+    public String toAccount() { return "account"; }
 
 }

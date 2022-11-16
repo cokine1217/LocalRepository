@@ -33,6 +33,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+<!--&lt;!&ndash;Security&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-security</artifactId>-->
+<!--        </dependency>-->
 <!--Thymeleaf 是一款用于渲染 XML/XHTML/HTML5 内容的模板引擎-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
